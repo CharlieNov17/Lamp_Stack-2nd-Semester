@@ -1,19 +1,25 @@
 Automation of LAMP (Linux, Apache, MySQL, PHP) stack deployment using a Bash Script in Ansible
 
-1. Created and provisioned two vagrant virtual machines (master and slave). Below is the configuration of their vagrantfiles. The configuration had the ip addresses of my machines and disabling of the ssh insert key
+1. Created and provisioned two vagrant virtual machines (master and slave). Below is the configuration of their vagrantfiles. The configuration had the ip addresses of my machines and disabling of the ssh insert key 
+[image1](/screenshots/1.png)
 
 
 2.  Created public keys in both machines and had them saved to enable connection between both machines. i.e the public key of master's machine was saved in the authorized key of the slave machine and vice versa. I generated the key using the command
+[image2](/screenshots/2.png)
 
 ssh-keygen
 
 3. Encountered some issues initally ssh into the slave from the master however, it was resolved by copying the keys and changing the permission on the slave node
+[image3](/screenshots/3.png)
 
 4. installed ansible using sudo apt install ansible -y
+[image4](/screenshots/4.png)
 
 5. created an inventory file in the Ansible directory created, saved the slave address in it and pinged to verify connectivity using ansible all -m ping -i inventory
+[image5](/screenshots/5.png)
 
 6. created a script Lamp.sh which contained intstallation and configuration of all dependencies for the LAMP (Linux, Apache, MySQL and PHP) stack script
+[image6](/screenshots/6.png)
    
     A reusable script is a piece of code that is designed to be easily used in multiple contexts or scenarios without modification. It should be well-structured, modular, and customizable to fit different use cases.
 
@@ -21,7 +27,7 @@ ssh-keygen
 :Script content.
 
 
-#!/bin/bash
+`#!/bin/bash
 #update your repositories
 sudo apt update
 
@@ -122,15 +128,16 @@ sudo php artisan migrate --no-interaction
 sudo php artisan db:seed --no-interaction
 sudo systemctl restart apache2
 
-uptime > /var/log/uptime.log
+uptime > /var/log/uptime.log`
 
 
 snippet of the script
+[image7](/screenshots/7.png)
 
 
 7. Created the playbook and automated the script in it 
 
----
+`---
 - hosts: all
   become: yes
   tasks:
@@ -160,9 +167,13 @@ snippet of the script
       assert:
         that: homepage_response.status == 200
         fail_msg: "Homepage is not accessible"
-        success_msg: "Homepage is accessible"
+        success_msg: "Homepage is accessible"`
 
+[image8](/screenshots/8.png)
+
+[image9](/screenshots/9.png)
 playbook ran suceccfully error free 
+[image10](/screenshots/10.png)
 
 
 
