@@ -1,0 +1,31 @@
+---
+- hosts: all
+  become: yes
+  tasks:
+    - name: Change the User of script
+      copy:
+        src: /home/vagrant/Ansible_Laravel_Exam/Lamp.sh
+        dest: /home/vagrant/Lamp.sh
+        mode: 0755
+
+    - name: install LAMP stack
+      shell: ./Lamp.sh
+ 
+    - name: Add cron job for system uptime
+      cron:
+        name: "system uptime"
+        minute: "0"
+        hour: "0"
+        job: "uptime >> /home/vagrant/uptime.log"
+  
+    - name: Check if application homepage is accessible
+      uri:
+        url: "http://192.168.44.22"
+        method: GET
+      register: homepage_response
+
+    - name: Assert that homepage returns HTTP 200 OK
+      assert:
+        that: homepage_response.status == 200
+        fail_msg: "Homepage is not accessible"
+        success_msg: "Homepage is accessible"
